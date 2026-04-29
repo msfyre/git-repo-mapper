@@ -2,34 +2,44 @@
 #include <SDL3/SDL_events.h>
 #include <chrono>
 #include <cstdio>
+#include <vector>
 
-void execute_runtime() {
-	Runtime runtime;
-	runtime.isRunning = true;
+Runtime::Runtime() {
+	DeltaTime = 0;
+	isRunning = false;
+}
 
-	float deltatime = 0;
-
+void Runtime::Execute() {
 	auto prevtime = std::chrono::high_resolution_clock::now();
 
-	while (runtime.isRunning) {
+	isRunning = true;
+
+	while (isRunning) {
 		auto currtime = std::chrono::high_resolution_clock::now();
 
 		SDL_Event event;
 
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_EVENT_QUIT) {
-				runtime.isRunning = false;
+				isRunning = false;
 			}
+		}
+
+		for (auto& callback : events) {
+			callback(DeltaTime);
 		}
 
 		std::chrono::duration<float> delayduration = currtime - prevtime;
 
-		deltatime = delayduration.count();
+		DeltaTime = delayduration.count();
 
 		prevtime = currtime;
-
-		std::printf("%f ms\n", deltatime);
 	}
 
-	std::printf("Calling it quits...");
+	std::printf("Closing...\n");
+}
+
+void Runtime::SubscribeToRuntime(RuntimeEventCallbackFn callbackfn) {
+	events.insert(events.begin(), callbackfn);
+	std::printf("Subscribed!\n");
 }

@@ -1,10 +1,25 @@
 #ifndef PROGRAM_RUNTIME
 #define PROGRAM_RUNTIME
 
-struct Runtime {
-	bool isRunning;
-};
+#include <array>
+#include <functional>
+#include <vector>
 
-void execute_runtime();
+using RuntimeEventCallbackFn = std::function<void(float)>;
+
+class Runtime {
+	bool isRunning;
+	
+	// parameter of the func is deltatime
+	std::vector<RuntimeEventCallbackFn> events; 
+
+	public:
+		float DeltaTime;
+
+		Runtime();
+
+		void Execute();
+		void SubscribeToRuntime(RuntimeEventCallbackFn callbackfn);
+};
 
 #endif
