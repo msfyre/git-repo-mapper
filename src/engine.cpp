@@ -11,6 +11,8 @@ bool Engine::IsDebug = false;
 Runtime *Engine::ProgramRuntime = nullptr;
 Renderer *Engine::ProgramRenderer = nullptr;
 
+// so far this only renders the fps counter
+// lols
 void render_debug_information(SDL_Renderer *renderer, float runtime_dt, float render_dt)
 {
     std::string fps_string = std::to_string(1.0 / runtime_dt);
