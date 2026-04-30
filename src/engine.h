@@ -1,5 +1,5 @@
-#include "core/renderer.h"
-#include "core/runtime.h"
+#include "core_engine/renderer.h"
+#include "core_engine/runtime.h"
 
 #ifndef PROGRAM_ENGINE
 #define PROGRAM_ENGINE

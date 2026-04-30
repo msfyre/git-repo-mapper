@@ -31,6 +31,8 @@ void Runtime::Execute()
             }
         }
 
+        // TODO: Migrate event callback execution to their own threads
+        // @msfyre, 4/30/2026
         for (RuntimeEvent event : events)
         {
             event.callback(DeltaTime, sdl_event);
