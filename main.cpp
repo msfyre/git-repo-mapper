@@ -1,6 +1,9 @@
-#include "src/core/runtime.cpp"
+#include "src/engine.cpp"
+#include "src/engine.h"
 
-int main() {
-	execute_runtime();
-	return 0;
+int main()
+{
+    Engine::Run("Git Mapper");
+
+    return 0;
 }
