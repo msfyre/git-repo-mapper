@@ -14,7 +14,7 @@ class Engine
     static Runtime *ProgramRuntime;
     static Renderer *ProgramRenderer;
 
-    static void Run(const char *program_name);
+    static void Run(const char *program_name, size_t max_fps);
 };
 
 #endif

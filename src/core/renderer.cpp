@@ -4,15 +4,15 @@
 #include <SDL3/SDL_render.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_timer.h>
+#include <SDL3/SDL_video.h>
 #include <chrono>
 
-Renderer::Renderer(Runtime *runtime, const char *window_name, int w, int h, float fps_cap)
+Renderer::Renderer(Runtime *runtime, const char *window_name, int w, int h)
 {
     DeltaTime = 0;
-    frameDelay = 1.0 / fps_cap;
 
-    SDL_Window *window = SDL_CreateWindow(window_name, w, h, 0);
-    SDLRenderer = SDL_CreateRenderer(window, nullptr);
+    SDLWindow = SDL_CreateWindow(window_name, w, h, 0);
+    SDLRenderer = SDL_CreateRenderer(SDLWindow, nullptr);
 
     RuntimeEventCallbackFn call_render_lambda = [this](float runtime_dt, SDL_Event sdl_event) {
         this->callRender(runtime_dt);
@@ -23,8 +23,6 @@ Renderer::Renderer(Runtime *runtime, const char *window_name, int w, int h, floa
 
 void Renderer::callRender(float runtime_dt)
 {
-    SDL_Delay((frameDelay * 1000) - runtime_dt);
-
     auto prevtime = std::chrono::high_resolution_clock::now();
 
     SDL_SetRenderDrawColor(SDLRenderer, 0, 0, 0, 255);
@@ -45,11 +43,16 @@ void Renderer::callRender(float runtime_dt)
 RenderEvent Renderer::SubscribeFunction(RenderEventCallbackFn callbackfn)
 {
     RenderEvent event = {
-        .uid = ++nextCallbackUID,
+        .uid = nextCallbackUID++,
         .callback = callbackfn,
     };
 
     events.push_back(event);
 
     return event;
+}
+
+void Renderer::UnsubscribeEvent(RenderEvent event)
+{
+    events.erase(events.begin() + event.uid);
 }

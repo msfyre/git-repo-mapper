@@ -20,13 +20,14 @@ class Runtime
 {
     size_t nextCallbackFnUID;
     bool isRunning;
+    float frameDelayMS;
 
     std::vector<RuntimeEvent> events;
 
   public:
     float DeltaTime;
 
-    Runtime();
+    Runtime(size_t fps_cap);
 
     void Execute();
     RuntimeEvent SubscribeFunction(RuntimeEventCallbackFn callbackfn);

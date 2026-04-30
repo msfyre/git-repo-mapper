@@ -3,7 +3,8 @@
 
 int main()
 {
-    Engine::Run("Git Mapper");
+    Engine::IsDebug = true;
+    Engine::Run("Git Mapper", 60);
 
     return 0;
 }

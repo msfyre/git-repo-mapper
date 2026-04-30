@@ -1,13 +1,16 @@
 #include "runtime.h"
 #include <SDL3/SDL_events.h>
+#include <SDL3/SDL_timer.h>
 #include <chrono>
+#include <cstddef>
 #include <cstdio>
 
-Runtime::Runtime()
+Runtime::Runtime(size_t fps_cap)
 {
     DeltaTime = 0;
     isRunning = false;
     nextCallbackFnUID = 0;
+    frameDelayMS = (1.0 / fps_cap) * 1000;
 }
 
 void Runtime::Execute()
@@ -38,6 +41,8 @@ void Runtime::Execute()
         std::chrono::duration<float> delayduration = currtime - prevtime;
 
         DeltaTime = delayduration.count();
+
+        SDL_Delay(frameDelayMS - DeltaTime);
 
         prevtime = currtime;
     }
