@@ -1,25 +1,36 @@
+#include <SDL3/SDL_events.h>
+#include <array>
+#include <cstddef>
+#include <functional>
+#include <unordered_set>
+#include <vector>
+
 #ifndef PROGRAM_RUNTIME
 #define PROGRAM_RUNTIME
 
-#include <array>
-#include <functional>
-#include <vector>
+using RuntimeEventCallbackFn = std::function<void(float runtime_dt, SDL_Event event)>;
 
-using RuntimeEventCallbackFn = std::function<void(float)>;
+struct RuntimeEvent
+{
+    size_t uid;
+    RuntimeEventCallbackFn callback;
+};
 
-class Runtime {
-	bool isRunning;
-	
-	// parameter of the func is deltatime
-	std::vector<RuntimeEventCallbackFn> events; 
+class Runtime
+{
+    size_t nextCallbackFnUID;
+    bool isRunning;
 
-	public:
-		float DeltaTime;
+    std::vector<RuntimeEvent> events;
 
-		Runtime();
+  public:
+    float DeltaTime;
 
-		void Execute();
-		void SubscribeToRuntime(RuntimeEventCallbackFn callbackfn);
+    Runtime();
+
+    void Execute();
+    RuntimeEvent SubscribeFunction(RuntimeEventCallbackFn callbackfn);
+    void UnsubscribeFunction(RuntimeEvent event);
 };
 
 #endif

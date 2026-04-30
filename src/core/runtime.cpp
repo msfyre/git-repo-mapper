@@ -2,44 +2,57 @@
 #include <SDL3/SDL_events.h>
 #include <chrono>
 #include <cstdio>
-#include <vector>
 
-Runtime::Runtime() {
-	DeltaTime = 0;
-	isRunning = false;
+Runtime::Runtime()
+{
+    DeltaTime = 0;
+    isRunning = false;
+    nextCallbackFnUID = 0;
 }
 
-void Runtime::Execute() {
-	auto prevtime = std::chrono::high_resolution_clock::now();
+void Runtime::Execute()
+{
+    auto prevtime = std::chrono::high_resolution_clock::now();
 
-	isRunning = true;
+    isRunning = true;
 
-	while (isRunning) {
-		auto currtime = std::chrono::high_resolution_clock::now();
+    while (isRunning)
+    {
+        SDL_Event sdl_event;
 
-		SDL_Event event;
+        while (SDL_PollEvent(&sdl_event))
+        {
+            if (sdl_event.type == SDL_EVENT_QUIT)
+            {
+                isRunning = false;
+            }
+        }
 
-		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_EVENT_QUIT) {
-				isRunning = false;
-			}
-		}
+        for (RuntimeEvent event : events)
+        {
+            event.callback(DeltaTime, sdl_event);
+        }
 
-		for (auto& callback : events) {
-			callback(DeltaTime);
-		}
+        auto currtime = std::chrono::high_resolution_clock::now();
 
-		std::chrono::duration<float> delayduration = currtime - prevtime;
+        std::chrono::duration<float> delayduration = currtime - prevtime;
 
-		DeltaTime = delayduration.count();
+        DeltaTime = delayduration.count();
 
-		prevtime = currtime;
-	}
+        prevtime = currtime;
+    }
 
-	std::printf("Closing...\n");
+    std::printf("Closing...\n");
 }
 
-void Runtime::SubscribeToRuntime(RuntimeEventCallbackFn callbackfn) {
-	events.insert(events.begin(), callbackfn);
-	std::printf("Subscribed!\n");
+RuntimeEvent Runtime::SubscribeFunction(RuntimeEventCallbackFn callbackfn)
+{
+    RuntimeEvent event = {
+        .uid = ++nextCallbackFnUID,
+        .callback = callbackfn,
+    };
+
+    events.push_back(event);
+
+    return event;
 }
