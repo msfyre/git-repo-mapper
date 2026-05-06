@@ -1,8 +1,11 @@
-#include "core_engine/renderer.h"
-#include "core_engine/runtime.h"
+#include "renderer.h"
+#include "runtime.h"
 
 #ifndef PROGRAM_ENGINE
 #define PROGRAM_ENGINE
+
+namespace engine
+{
 
 class Engine
 {
@@ -16,5 +19,7 @@ class Engine
 
     static void Run(const char *program_name, size_t max_fps);
 };
+
+} // namespace engine
 
 #endif
