@@ -1,5 +1,6 @@
-#include "src/engine.cpp"
-#include "src/engine.h"
+#include "../includes/engine/engine.h"
+
+using namespace engine;
 
 int main()
 {
