@@ -1,7 +1,7 @@
-#include <engine/runtime.h>
-
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_timer.h>
+
+#include <engine/runtime.h>
 
 #include <chrono>
 #include <cstddef>
@@ -9,36 +9,28 @@
 
 using namespace engine;
 
-Runtime::Runtime(size_t fps_cap)
-{
+Runtime::Runtime(size_t fps_cap) {
     DeltaTime = 0;
     isRunning = false;
     nextCallbackFnUID = 0;
     frameDelayMS = (1.0 / fps_cap) * 1000;
 }
 
-void Runtime::Execute()
-{
+void Runtime::Execute() {
     auto prevtime = std::chrono::high_resolution_clock::now();
 
     isRunning = true;
 
-    while (isRunning)
-    {
+    while (isRunning) {
         SDL_Event sdl_event;
 
-        while (SDL_PollEvent(&sdl_event))
-        {
-            if (sdl_event.type == SDL_EVENT_QUIT)
-            {
+        while (SDL_PollEvent(&sdl_event)) {
+            if (sdl_event.type == SDL_EVENT_QUIT) {
                 isRunning = false;
             }
         }
 
-        // TODO: Migrate event callback execution to their own threads
-        // @msfyre, 4/30/2026
-        for (RuntimeEvent event : events)
-        {
+        for (RuntimeEvent event : events) {
             event.callback(DeltaTime, sdl_event);
         }
 
@@ -56,8 +48,7 @@ void Runtime::Execute()
     std::printf("Closing...\n");
 }
 
-RuntimeEvent Runtime::SubscribeFunction(RuntimeEventCallbackFn callbackfn)
-{
+RuntimeEvent Runtime::SubscribeFunction(RuntimeEventCallbackFn callbackfn) {
     RuntimeEvent event = {
         .uid = ++nextCallbackFnUID,
         .callback = callbackfn,

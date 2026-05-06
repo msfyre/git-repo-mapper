@@ -4,11 +4,9 @@
 #ifndef PROGRAM_ENGINE
 #define PROGRAM_ENGINE
 
-namespace engine
-{
+namespace engine {
 
-class Engine
-{
+class Engine {
     static void parseDebug();
 
   public:

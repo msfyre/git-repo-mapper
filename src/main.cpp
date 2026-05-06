@@ -1,9 +1,8 @@
-#include "../includes/engine/engine.h"
+#include <engine/engine.h>
 
 using namespace engine;
 
-int main()
-{
+int main() {
     Engine::IsDebug = true;
     Engine::Run("Git Mapper", 60);
 

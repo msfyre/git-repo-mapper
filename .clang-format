@@ -1,6 +1,22 @@
-BasedOnStyle: Microsoft
 TabWidth:     4
 IndentWidth:  4
 UseTab:       Never
 Language:     Cpp
 Standard:     Auto
+
+IncludeBlocks: Regroup
+IncludeCategories:
+    # Files
+    - Regex: '^".*"'
+      Priority: 1
+
+    # SDL3
+    - Regex: "^<SDL3/.*>"
+      Priority: 2
+
+    - Regex: "^<engine/.*>"
+      Priority: 3
+
+    # std libraries
+    - Regex: '^<([a-z_]+|c[a-z_])>'
+      Priority: 4

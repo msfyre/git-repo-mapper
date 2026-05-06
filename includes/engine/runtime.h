@@ -1,4 +1,5 @@
 #include <SDL3/SDL_events.h>
+
 #include <cstddef>
 #include <functional>
 #include <vector>
@@ -6,19 +7,17 @@
 #ifndef PROGRAM_RUNTIME
 #define PROGRAM_RUNTIME
 
-namespace engine
-{
+namespace engine {
 
-using RuntimeEventCallbackFn = std::function<void(float runtime_dt, SDL_Event event)>;
+using RuntimeEventCallbackFn =
+    std::function<void(float runtime_dt, SDL_Event event)>;
 
-struct RuntimeEvent
-{
+struct RuntimeEvent {
     size_t uid;
     RuntimeEventCallbackFn callback;
 };
 
-class Runtime
-{
+class Runtime {
     size_t nextCallbackFnUID;
     bool isRunning;
     float frameDelayMS;
