@@ -1,10 +1,13 @@
-#include "engine.h"
-#include "core_engine/renderer.cpp"
-#include "core_engine/renderer.h"
-#include "core_engine/runtime.cpp"
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_render.h>
+
+#include <engine/engine.h>
+#include <engine/renderer.h>
+#include <engine/runtime.h>
+
 #include <string>
+
+using namespace engine;
 
 bool Engine::IsDebug = false;
 
@@ -18,7 +21,8 @@ void render_debug_information(SDL_Renderer *renderer, float runtime_dt, float re
     std::string fps_string = std::to_string(1.0 / runtime_dt);
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderDebugText(renderer, 5, 5, ((std::string) "FPS: " + fps_string).c_str());
+    SDL_RenderDebugText(renderer, 5, 5, ((std::string) "DEBUG MODE: " + (Engine::IsDebug ? "TRUE" : "FALSE")).c_str());
+    SDL_RenderDebugText(renderer, 5, 15, ((std::string) "FPS: " + fps_string).c_str());
 }
 
 void Engine::Run(const char *program_name, size_t max_fps)

@@ -1,9 +1,13 @@
-#include "runtime.h"
+#include <engine/runtime.h>
+
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_timer.h>
+
 #include <chrono>
 #include <cstddef>
 #include <cstdio>
+
+using namespace engine;
 
 Runtime::Runtime(size_t fps_cap)
 {
