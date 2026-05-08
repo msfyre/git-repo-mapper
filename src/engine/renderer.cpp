@@ -4,18 +4,27 @@
 #include <SDL3/SDL_timer.h>
 #include <SDL3/SDL_video.h>
 
-#include <engine/renderer.h>
-#include <engine/runtime.h>
+#include <engine/renderer.hpp>
+#include <engine/runtime.hpp>
 
 #include <chrono>
 
-using namespace engine;
+#include <GL/gl.h>
+#include <sys/types.h>
 
-Renderer::Renderer(Runtime *runtime, const char *window_name, int w, int h) {
+using namespace engine::runtime;
+using namespace engine::renderer;
+
+Renderer::Renderer(Runtime *runtime, const char *window_name, uint w, uint h) {
     DeltaTime = 0;
 
-    SDLWindow = SDL_CreateWindow(window_name, w, h, 0);
-    SDLRenderer = SDL_CreateRenderer(SDLWindow, nullptr);
+    ViewportSize.x = w;
+    ViewportSize.y = h;
+
+    SDLWindow = SDL_CreateWindow(window_name, w, h, SDL_WINDOW_OPENGL);
+    SDLContext = SDL_GL_CreateContext(SDLWindow);
+
+    SDL_GL_MakeCurrent(SDLWindow, SDLContext);
 
     RuntimeEventCallbackFn call_render_lambda = [this](float runtime_dt,
                                                        SDL_Event sdl_event) {
@@ -28,14 +37,14 @@ Renderer::Renderer(Runtime *runtime, const char *window_name, int w, int h) {
 void Renderer::callRender(float runtime_dt) {
     auto prevtime = std::chrono::high_resolution_clock::now();
 
-    SDL_SetRenderDrawColor(SDLRenderer, 0, 0, 0, 255);
-    SDL_RenderClear(SDLRenderer);
+    glViewport(0, 0, this->ViewportSize.x, this->ViewportSize.y);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     for (RenderEvent event : events) {
-        event.callback(this->SDLRenderer, runtime_dt, DeltaTime);
+        event.callback(runtime_dt, DeltaTime);
     }
 
-    SDL_RenderPresent(SDLRenderer);
+    SDL_GL_SwapWindow(SDLWindow);
 
     auto currtime = std::chrono::high_resolution_clock::now();
 

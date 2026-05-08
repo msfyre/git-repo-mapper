@@ -8,6 +8,7 @@
 #define PROGRAM_RUNTIME
 
 namespace engine {
+namespace runtime {
 
 using RuntimeEventCallbackFn =
     std::function<void(float runtime_dt, SDL_Event event)>;
@@ -33,6 +34,7 @@ class Runtime {
     RuntimeEvent SubscribeFunction(RuntimeEventCallbackFn callbackfn);
     void UnsubscribeFunction(RuntimeEvent event);
 };
+} // namespace runtime
 
 } // namespace engine
 

@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.10)
-project(GitMapper VERSION 0.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.11)
+project(GitMapper LANGUAGES CXX)
 
 # CPP standards
 set(CMAKE_CXX_STANDARD 20)
@@ -7,18 +7,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(OPENGL_GL_PREFERENCE GLVND)
+
 add_executable(GitMapper src/main.cpp)
 
-# SDL3
+find_package(Curses REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(glm CONFIG REQUIRED)
 find_package(SDL3 REQUIRED)
-target_link_libraries(GitMapper PRIVATE SDL3::SDL3)
 
-# libgit2
 add_subdirectory(external/libgit2)
-target_link_libraries(GitMapper PRIVATE git2)
-
-# includes
-target_include_directories(GitMapper PRIVATE includes)
 
 add_library(engine
 	src/engine/engine.cpp
@@ -26,6 +24,15 @@ add_library(engine
 	src/engine/runtime.cpp
 )
 
-target_include_directories(engine PUBLIC includes)
+add_library(diagnostics
+	src/diagnostics/cpu.cpp
+)
 
-target_link_libraries(GitMapper PRIVATE engine)
+target_include_directories(engine PUBLIC includes)
+target_include_directories(diagnostics PUBLIC includes)
+
+target_include_directories(GitMapper PRIVATE includes ${CURSES_INCLUDE_DIR})
+
+target_link_libraries(engine PUBLIC diagnostics ncurses OpenGL::GL glm::glm SDL3::SDL3)
+target_link_libraries(GitMapper PRIVATE engine ${CURSES_LIBRARIES})
+

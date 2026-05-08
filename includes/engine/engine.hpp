@@ -1,10 +1,13 @@
-#include "renderer.h"
-#include "runtime.h"
+#include <engine/renderer.hpp>
+#include <engine/runtime.hpp>
 
 #ifndef PROGRAM_ENGINE
 #define PROGRAM_ENGINE
 
 namespace engine {
+
+using namespace engine::runtime;
+using namespace engine::renderer;
 
 class Engine {
     static void parseDebug();
